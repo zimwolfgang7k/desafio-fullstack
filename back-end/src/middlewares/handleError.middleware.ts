@@ -3,7 +3,7 @@ import { AppError } from "../errors/appError";
 
 class ErrorMiddleware {
   static async handle(
-    error: AppError,
+    error: Error,
     request: Request,
     response: Response,
     next: NextFunction
