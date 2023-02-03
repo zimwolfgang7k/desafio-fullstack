@@ -1,5 +1,5 @@
 import { instanceToPlain } from "class-transformer";
-import { Request, response, Response } from "express";
+import { Request, Response } from "express";
 import { IClientCreateRequest } from "../../interfaces/clients.interface";
 import { ClientService } from "../../services/clients/clients.services";
 
@@ -28,5 +28,11 @@ export class ClientController {
       updatedClientData
     );
     return res.status(200).json(instanceToPlain(updatedClient));
+  }
+  static async retrieveClient(req: Request, res: Response) {
+    const clientId = req.params.id;
+    const client = await ClientService.retrieveClient(clientId);
+
+    return res.status(200).json(instanceToPlain(client));
   }
 }
