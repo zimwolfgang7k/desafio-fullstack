@@ -9,26 +9,26 @@ export class ClientSessionService {
   static async clientSession({ email, password }: ISession): Promise<String> {
     const clientRepository = AppDataSource.getRepository(Client);
 
-    const clientSession = await clientRepository.findOneBy({ email: email });
+    const client = await clientRepository.findOneBy({ email: email });
 
-    if (!clientSession) {
+    if (!client) {
       throw new AppError("Invalid email or password!", 403);
     }
 
-    const comparePassword = await compare(password, clientSession.password);
+    const comparePassword = await compare(password, client.password);
 
     if (!comparePassword) {
       throw new AppError("Invalid email or password!", 403);
     }
 
     const decoded = {
-      id: clientSession.id,
-      email: clientSession.email,
+      id: client.id,
+      email: client.email,
     };
 
     const token = jwt.sign(decoded, process.env.SECRET_KEY as string, {
       expiresIn: "1h",
-      subject: clientSession.id,
+      subject: client.id,
     });
 
     return token;

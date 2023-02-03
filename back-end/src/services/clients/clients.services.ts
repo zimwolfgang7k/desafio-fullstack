@@ -8,24 +8,20 @@ import { Utils } from "../../utils/functions";
 
 export class ClientService {
   static async createClient(
-    client: IClientCreateRequest
+    data: IClientCreateRequest
   ): Promise<IClientNoPassword> {
     const clientRepository = AppDataSource.getRepository(Client);
 
-    const validationDataClient = client.hasOwnProperty(
-      "name" && "email" && "phone_number" && "password"
-    );
-
-    if (!validationDataClient) {
+    if (!data.email || !data.name || !data.phone_number || !data.password) {
       throw new AppError("There is missing camps", 400);
     }
 
     const findClientName = await clientRepository.findOneBy({
-      name: client.name,
+      name: data.name,
     });
 
     const findClientEmail = await clientRepository.findOneBy({
-      email: client.email,
+      email: data.email,
     });
 
     if (findClientEmail) {
@@ -35,12 +31,12 @@ export class ClientService {
       throw new AppError("This name is already being used", 409);
     }
 
-    const hashedPassword = await hash(client.password, 10);
+    const hashedPassword = await hash(data.password, 10);
 
     const clientCreated = clientRepository.create({
-      name: client.name,
-      email: client.email,
-      phone_number: client.phone_number,
+      name: data.name,
+      email: data.email,
+      phone_number: data.phone_number,
       password: hashedPassword,
     });
 
@@ -60,7 +56,13 @@ export class ClientService {
   static async deleteClient(id: string): Promise<void> {
     const clientRepository = AppDataSource.getRepository(Client);
 
-    const client = clientRepository.findOneBy({ id: id });
+    const clients = await clientRepository.find();
+
+    const client = clients.find((client) => client.id === id);
+
+    if (!client) {
+      throw new AppError("Client not found", 400);
+    }
 
     await clientRepository.delete(id);
   }
@@ -93,5 +95,18 @@ export class ClientService {
     });
 
     return clientUpdated!;
+  }
+  static async retrieveClient(id: string): Promise<IClientNoPassword> {
+    const clientRepository = AppDataSource.getRepository(Client);
+
+    const clients = await clientRepository.find();
+
+    const client = clients.find((client) => client.id === id);
+
+    if (!client) {
+      throw new AppError("Client not found", 400);
+    }
+
+    return client;
   }
 }

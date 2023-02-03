@@ -7,7 +7,7 @@ declare global {
         name?: boolean;
         id?: string;
         email?: string;
-        hotel?: string;
+        phone_number?: string;
       };
     }
   }

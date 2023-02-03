@@ -29,7 +29,7 @@ class Client {
   @CreateDateColumn()
   createdAt: Date;
 
-  @OneToMany(() => Contacts, (contacts) => contacts.client)
+  @OneToMany(() => Contacts, (Contacts) => Contacts.client)
   contacts: Contacts[];
 }
 
