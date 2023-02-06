@@ -30,9 +30,8 @@ export class ClientController {
     return res.status(200).json(instanceToPlain(updatedClient));
   }
   static async retrieveClient(req: Request, res: Response) {
-    const clientId = req.params.id;
+    const clientId = req.client.id!;
     const client = await ClientService.retrieveClient(clientId);
-
     return res.status(200).json(instanceToPlain(client));
   }
 }
