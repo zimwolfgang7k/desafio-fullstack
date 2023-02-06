@@ -99,9 +99,11 @@ export class ClientService {
   static async retrieveClient(id: string): Promise<IClientNoPassword> {
     const clientRepository = AppDataSource.getRepository(Client);
 
-    const clients = await clientRepository.find();
-
-    const client = clients.find((client) => client.id === id);
+    const client = await clientRepository.findOne({
+      where: {
+        id,
+      },
+    });
 
     if (!client) {
       throw new AppError("Client not found", 400);
